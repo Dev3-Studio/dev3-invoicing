@@ -2,6 +2,7 @@ require('module-alias/register');
 const mongoose = require('mongoose');
 const { globSync } = require('glob');
 const path = require('path');
+var fs = require('fs');
 
 // Make sure we are running node 7.6+
 const [major, minor] = process.versions.node.split('.').map(parseFloat);
@@ -33,7 +34,18 @@ for (const filePath of modelsFiles) {
 
 // Start our app!
 const app = require('./app');
-app.set('port', process.env.PORT || 8888);
-const server = app.listen(app.get('port'), () => {
-  console.log(`Express running → On PORT : ${server.address().port}`);
+
+// get https certificate
+const privateKey = fs.readFileSync('sslcert/server.key', 'utf8');
+const certificate = fs.readFileSync('sslcert/server.crt', 'utf8');
+
+const credentials = { key: privateKey, cert: certificate };
+
+const httpsServer = require('https').createServer(credentials, app);
+httpsServer.listen(process.env.PORT, () => {
+  console.log(`Express running → PORT : ${httpsServer.address().port}`);
 });
+// app.set('port', process.env.PORT || 8888);
+// const server = app.listen(app.get('port'), () => {
+//   console.log(`Express running → On PORT : ${server.address().port}`);
+// });
