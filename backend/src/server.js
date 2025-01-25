@@ -36,8 +36,8 @@ for (const filePath of modelsFiles) {
 const app = require('./app');
 
 // get https certificate
-const privateKey = fs.readFileSync('sslcert/server.key', 'utf8');
-const certificate = fs.readFileSync('sslcert/server.crt', 'utf8');
+const privateKey = fs.readFileSync('./src/sslcert/server.key', 'utf8');
+const certificate = fs.readFileSync('./src/sslcert/server.crt', 'utf8');
 
 const credentials = { key: privateKey, cert: certificate };
 
