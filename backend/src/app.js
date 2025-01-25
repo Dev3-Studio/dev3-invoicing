@@ -44,7 +44,8 @@ app.use('/public', corePublicRouter);
 
 // ping route for testing
 app.get('/ping', (req, res) => {
-  res.send('pong');
+    console.log('ping');
+    res.send('pong');
 });
 
 // If that above routes didnt work, we 404 them and forward to error handler
