@@ -70,7 +70,11 @@ exports.generatePdf = async (
       const browser = await puppeteer.launch();
       const page = await browser.newPage();
       await page.setContent(htmlContent);
-      await page.pdf({ path: info.targetLocation, format: 'A4' });
+      await page.pdf({ path: targetLocation, format: 'A4' }).then(() => {
+        if (callback) callback();
+      }).catch((error) => {
+        throw new Error(error);
+      });
       await browser.close();
 
       // pdf
