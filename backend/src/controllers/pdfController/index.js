@@ -1,7 +1,6 @@
 const pug = require('pug');
 const fs = require('fs');
-// const moment = require('moment');
-// let pdf = require('html-pdf');
+const moment = require('moment');
 const { listAllSettings, loadSettings } = require('@/middlewares/settings');
 const { getData } = require('@/middlewares/serverData');
 const useLanguage = require('@/locale/useLanguage');
