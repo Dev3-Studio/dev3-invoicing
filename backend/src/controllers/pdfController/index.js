@@ -1,11 +1,12 @@
 const pug = require('pug');
 const fs = require('fs');
-const moment = require('moment');
-let pdf = require('html-pdf');
+// const moment = require('moment');
+// let pdf = require('html-pdf');
 const { listAllSettings, loadSettings } = require('@/middlewares/settings');
 const { getData } = require('@/middlewares/serverData');
 const useLanguage = require('@/locale/useLanguage');
 const { useMoney, useDate } = require('@/settings');
+const puppeteer = require('puppeteer');
 
 const pugFiles = ['invoice', 'offer', 'quote', 'payment'];
 
@@ -14,7 +15,7 @@ require('dotenv').config({ path: '.env.local' });
 
 exports.generatePdf = async (
   modelName,
-  info = { filename: 'pdf_file', format: 'A5', targetLocation: '' },
+  info = { filename: 'pdf_file', format: 'A4', targetLocation: '' },
   result,
   callback
 ) => {
@@ -66,17 +67,23 @@ exports.generatePdf = async (
         moneyFormatter,
         moment: moment,
       });
+      
+      const browser = await puppeteer.launch();
+      const page = await browser.newPage();
+      await page.setContent(htmlContent);
+      await page.pdf({ path: info.targetLocation, format: 'A4' });
+      await browser.close();
 
-      pdf
-        .create(htmlContent, {
-          format: info.format,
-          orientation: 'portrait',
-          border: '10mm',
-        })
-        .toFile(targetLocation, function (error) {
-          if (error) throw new Error(error);
-          if (callback) callback();
-        });
+      // pdf
+      //   .create(htmlContent, {
+      //     format: info.format,
+      //     orientation: 'portrait',
+      //     border: '10mm',
+      //   })
+      //   .toFile(targetLocation, function (error) {
+      //     if (error) throw new Error(error);
+      //     if (callback) callback();
+      //   });
     }
   } catch (error) {
     throw new Error(error);
